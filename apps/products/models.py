@@ -34,7 +34,6 @@ class CategoryProduct(BaseModel):
 
     # TODO: Define fields here
     description = models.CharField('Descripción',max_length=50,blank=False,null=False,unique=True)
-    measure_unit = models.ForeignKey(MeasureUnit,on_delete=CASCADE,verbose_name='Unida de MEdida')
     historical = HistoricalRecords()
 
     @property
@@ -48,7 +47,7 @@ class CategoryProduct(BaseModel):
     class Meta:
         """Meta definition for CategoryProduct."""
 
-        verbose_name = 'Categoria de Producto'
+        verbose_name = 'Categoria del Producto'
         verbose_name_plural = 'Categorias de Productos'
 
     def __str__(self):
@@ -60,7 +59,7 @@ class Indicator(BaseModel):
 
     # TODO: Define fields here
     discount_value = models.PositiveSmallIntegerField(default=0)
-    category_product = models.ForeignKey(CategoryProduct, verbose_name="Indicador de oferta", on_delete=models.CASCADE)
+    category_product = models.ForeignKey(CategoryProduct, verbose_name="Indicador de Oferta", on_delete=models.CASCADE)
     historical = HistoricalRecords()
 
     @property
@@ -88,6 +87,8 @@ class Product(BaseModel):
     name = models.CharField('Nombre de Producto', max_length=150,unique=True,blank=False,null=False)
     description = models.TextField('Descripción de Producto',blank=False,null=False)
     image = models.ImageField('Imagen del Producto', upload_to='products/',blank=True,null=True)
+    measure_unit = models.ForeignKey(MeasureUnit,on_delete=CASCADE,verbose_name='Unidad de Medida',null=True)
+    category_product = models.ForeignKey(CategoryProduct, verbose_name='Categoría del Producto', on_delete=models.CASCADE,null=True)
     historical = HistoricalRecords()
 
     @property

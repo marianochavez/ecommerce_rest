@@ -5,17 +5,15 @@ from rest_framework.response import Response
 from apps.base.api import GeneralListAPIView
 from apps.products.api.serializers.product_serializers import ProductSerializer
 
-class ProductListAPIView(GeneralListAPIView):
-    """List of all products
+
+class ProductListCreateAPIView(generics.ListCreateAPIView):
+    """ Concrete view for listing a queryset or creating a model instance of Product
 
     """
     serializer_class = ProductSerializer
 
-class ProductCreateAPIView(generics.CreateAPIView):
-    """Create product
-
-    """
-    serializer_class = ProductSerializer
+    def get_queryset(self):
+        return self.get_serializer().Meta.model.objects.filter(state=True)
 
     def post(self,request):
         serializer = self.serializer_class(data = request.data)
@@ -71,7 +69,7 @@ class ProductRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
 
     """
     Example of method path and put, unused
-    
+
     def get_queryset(self,pk):
         return self.get_serializer().Meta.model.objects.filter(state = True).filter(id = pk).first()
 

@@ -3,9 +3,10 @@ from apps.products.api.serializers.general_serializers import (
 from apps.base.api import GeneralListAPIView
 
 from rest_framework import generics
+from rest_framework import viewsets
 
 
-class MeasureUnitListAPIView(GeneralListAPIView):
+class MeasureUniViewSet(viewsets.ModelViewSet):
     """Show list of instances of MeasureUnit model
 
     Args:
@@ -14,7 +15,11 @@ class MeasureUnitListAPIView(GeneralListAPIView):
     """
     serializer_class = MeasureUnitSerializer
 
-class IndicatorListAPIView(GeneralListAPIView):
+    def get_queryset(self):
+        return self.serializer_class().Meta.model.objects.all()
+
+
+class IndicatorViewSet(viewsets.ModelViewSet):
     """Show list of instances of Indicator model
 
     Args:
@@ -23,7 +28,10 @@ class IndicatorListAPIView(GeneralListAPIView):
     """
     serializer_class = IndicatorSerializer
 
-class CategoryProductListAPIView(GeneralListAPIView):
+    def get_queryset(self):
+        return self.serializer_class().Meta.model.objects.all()
+
+class CategoryProductViewSet(viewsets.ModelViewSet):
     """Show list of instances of CategoryProduct model
 
     Args:
@@ -31,3 +39,6 @@ class CategoryProductListAPIView(GeneralListAPIView):
         queryset-->objects-state=True
     """
     serializer_class = CategoryProductSerializer
+
+    def get_queryset(self):
+        return self.serializer_class().Meta.model.objects.all()

@@ -19,6 +19,7 @@ def user_api_view(request):
     #create
     elif request.method == 'POST':
         user_serializer = UserSerializer(data = request.data)
+        #validation
         if user_serializer.is_valid():
             user_serializer.save()
             return Response(user_serializer.data,status = status.HTTP_201_CREATED)

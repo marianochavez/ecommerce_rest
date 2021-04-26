@@ -7,7 +7,7 @@ from rest_framework import viewsets
 
 
 class MeasureUniViewSet(viewsets.ModelViewSet):
-    """Show list of instances of MeasureUnit model
+    """Show list of all instances of MeasureUnit model
 
     Args:
         GeneralListAPIView (generics.ListAPIView): General View for list view where 
@@ -20,7 +20,7 @@ class MeasureUniViewSet(viewsets.ModelViewSet):
 
 
 class IndicatorViewSet(viewsets.ModelViewSet):
-    """Show list of instances of Indicator model
+    """Show list of all instances of Indicator model
 
     Args:
         GeneralListAPIView (generics.ListAPIView): General View for list view where 
@@ -32,7 +32,7 @@ class IndicatorViewSet(viewsets.ModelViewSet):
         return self.serializer_class().Meta.model.objects.all()
 
 class CategoryProductViewSet(viewsets.ModelViewSet):
-    """Show list of instances of CategoryProduct model
+    """Show list of all instances of CategoryProduct model
 
     Args:
         GeneralListAPIView (generics.ListAPIView): General View for list view where 

@@ -3,9 +3,9 @@ from rest_framework.response import Response
 
 from apps.base.api import GeneralListAPIView
 from apps.products.api.serializers.product_serializers import ProductSerializer
+from apps.users.authentication_mixins import Authentication
 
-
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(Authentication, viewsets.ModelViewSet):
     """Automatic CRUD View for Product using ModelViewSet
     """
     serializer_class = ProductSerializer

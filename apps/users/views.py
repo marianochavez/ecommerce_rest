@@ -4,12 +4,38 @@ from datetime import datetime
 
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from apps.users.models import User
 from apps.users.api.serializers import UserTokenSerializer
 
+class UserToken(APIView):
+    """View for refresh user token
+
+    """
+    def get(self,request,*args, **kwargs):
+        """get token
+
+        Args:
+            request (username)
+
+        Returns:
+            token: Renewed user token 
+        """
+        username = request.GET.get('username')
+        try:
+            user_token = Token.objects.get(
+                user = UserTokenSerializer().Meta.model.objects.filter(username = username).first()
+            )
+            return Response({
+                'token':user_token.key
+            })
+        except:
+            return Response({
+                'error': 'Credenciales enviadas incorrectas'
+            }, status = status.HTTP_400_BAD_REQUEST)
 
 class Login(ObtainAuthToken):
 
@@ -80,3 +106,40 @@ class Login(ObtainAuthToken):
             return Response({'error': 'Nombre de usuario y/o contraseña incorrectos.'},status = status.HTTP_400_BAD_REQUEST)
 
         return Response({'message': 'Hola desde response'}, status=status.HTTP_200_OK)
+
+class Logout(APIView):
+
+    def post(self,request,*args, **kwargs):
+        try:
+
+            token = Token.objects.filter(key = request.GET.get('token')).first()
+
+            if token:
+                user = token.user
+                # Process to close existing session and generate new token If the user is logged again elsewhere
+                # all sessions with expiration date greater or equal than right now
+                all_sessions = Session.objects.filter(expire_date__gte = datetime.now())
+                
+                if all_sessions.exists():
+                    # for each session existent
+                    for session in all_sessions:
+                        # get_decoded() to get the session dictionary.
+                        # This is necessary because the dictionary is stored in an encoded format
+                        session_data = session.get_decoded()
+
+                        #session with this user
+                        if user.id == int(session_data.get('_auth_user_id')):
+                            session.delete()
+                token.delete()
+
+                session_message = 'Sesiones de usuario elminadas'
+                token_message = 'Token eliminado.'
+
+                return Response({'session_message':session_message,'token_message':token_message},
+                                    status = status.HTTP_200_OK)
+            return Response({'error':'No se ha encontrado un usuario con estas credenciales.'},
+                            status = status.HTTP_400_BAD_REQUEST)
+        except:
+            
+            return Response({'error': 'No se ha encontrado token en la petición.'},
+                                status = status.HTTP_409_CONFLICT)
